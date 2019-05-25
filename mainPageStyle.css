@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+/* Background pattern from Toptal Subtle Patterns */
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-image: url("img/pink dust.png");
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#link {
+    color: black;
+    text-decoration: none;
+    padding: 10px; 
+}
+
+.channelContainer {
+    border-right: 2px solid skyblue;
+    height: 100%;
+    box-sizing: border-box;
+    width: 400px;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 4px 0;
+    display: inline-block;
+    box-sizing: border-box;
+    border-image-source: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+    border-width: 2px;
+    border-image-slice: 1;
+    border-right: none;
+    border-top: none;
+    border-left: none;
+    background: none;
+    color: white;
+}
+
+.searchBtn {
+    background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    bottom: 60px;
+    width: 90px;
+    text-align: center;
+    left: 310px;
+}
+
+
