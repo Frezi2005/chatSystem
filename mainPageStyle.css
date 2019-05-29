@@ -26,6 +26,7 @@ body {
     height: 100%;
     box-sizing: border-box;
     width: 400px;
+    position: relative;
 }
 
 .searchInput {
@@ -58,5 +59,59 @@ body {
     text-align: center;
     left: 310px;
 }
+
+.newMessage {
+    border-radius: 50%;
+    background-color: skyblue;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+@keyframes bounce {
+    0%   {
+        transform: scale(1);
+    }
+    50%  {
+        transform: scale(1.4);
+    }
+    100% {
+        transform: scale(1);
+    }
+  }
+
+.letter {
+    transform: scale(2.5);
+    padding-top: 12px;
+    cursor: pointer;
+}
+
+.newMessage:hover {
+    animation-name: bounce;
+    animation-duration: 1s;
+}
+
+.hidden {
+    display: none;
+}
+
+.popupWindow {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: 5px solid white;
+    z-index: 100000000000;
+}
+
+textarea {
+    resize: none;
+}
+
+
 
 

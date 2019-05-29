@@ -30,6 +30,7 @@ session_start();
                 ?>
                 <input type="submit" name="submitBtn" value="Login" id="loginBtn"/>
             </form>
+            <a href="forgotPassword.php" id="link">Forgot password</a><br/><br/>
             <a href="registerPage.php" id="link">You don't have account? Register now!</a>
         </div>
     </body>

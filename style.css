@@ -29,7 +29,7 @@ body {
 }
 
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 12px 20px;
     margin: 4px 0;
@@ -43,7 +43,7 @@ input[type=text], input[type=password] {
     border-left: none;
 }
 
-#loginBtn, #registerBtn {
+#loginBtn, #registerBtn, #forgotPassBtn {
     background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
     color: white;
     padding: 14px 20px;
@@ -51,6 +51,7 @@ input[type=text], input[type=password] {
     border: none;
     cursor: pointer;
     width: 100%;
+    font-size: 20px;
 }
 
 input[type=submit]:hover {
@@ -65,6 +66,7 @@ input[type=submit]:hover {
     color: black;
     text-decoration: none;
     padding: 10px; 
+    width: 10px;
 }
 
 .registerWrapper {
@@ -87,6 +89,8 @@ input[type=submit]:hover {
     width: 30px;
     height: 30px;
 }
+
+
 
 
 

@@ -9,6 +9,7 @@
         $usersurname = $_POST['usersurname'];
         $password1 = $_POST['password1'];
         $password2 = $_POST['password2'];
+        $email = $_POST['email'];
 
         if(strlen($password1)<8||strlen($password1)>20) {
             $allChecked = false;
@@ -40,6 +41,19 @@
             $_SESSION['nameError'] = "Name have to be at least 1 character long";
         }
 
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $allChecked = false;
+            $_SESSION['emailError'] = "Please type correct email";
+        }
+
+        $sql = "SELECT * FROM users WHERE email LIKE '.$email.'";
+        $result = $conn->query($sql);
+        $emailExists = $result->fetch();
+        if($emailExists) {
+            $allChecked = false;
+            $_SESSION['emailError'] = "Email is already taken";
+        }
+
         if(strlen($usersurname) < 1) {
             $allChecked = false;
             $_SESSION['surnameError'] = "Surname have to be at least 1 character long";
@@ -47,7 +61,9 @@
 
         if($allChecked) {
             $passwordH = password_hash($password1, PASSWORD_DEFAULT);
-            if($conn->query("INSERT INTO `users`(`id`, `user_name`, `user_surname`, `pass`, `friends`) VALUES (null, $username, $usersurname, $passwordH, 0")) {
+            $sql = "INSERT INTO `users`(`id`, `user_name`, `user_surname`, `pass`, `email`, `friends`) VALUES (null, '.$username.', '.$usersurname.', $passwordH, $email, 0";
+            $result = $conn->query($sql);
+            if ($result) {
                 header("Location: index.php");
             } else {
                 echo "Database error";
@@ -88,6 +104,16 @@
                 if(isset($_SESSION['surnameError'])) {
                     echo "<div class='error'>".$_SESSION['surnameError']."</div>";
                     unset($_SESSION['surnameError']);
+                }
+            ?>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" placeholder="Email"><br/>
+            </div>
+            <?php
+                if(isset($_SESSION['emailError'])) {
+                    echo "<div class='error'>".$_SESSION['emailError']."</div>";
+                    unset($_SESSION['emailError']);
                 }
             ?>
             <div>
