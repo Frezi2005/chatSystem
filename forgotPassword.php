@@ -27,7 +27,7 @@
 </html>
 
 <?php
-
+    //Not working
     if(isset($_POST['submitBtn'])) {
         $email = $_POST['email'];
         $sql = "SELECT * FROM users WHERE email LIKE 'kamil.wan05@gmail.com'";

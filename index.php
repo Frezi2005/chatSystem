@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+    session_start();
 
 ?>
 
@@ -23,10 +23,11 @@ session_start();
                     <i class="fas fa-key key-icon"></i>
                 </div>
                 <?php 
-                if(isset($_SESSION['errorMsg'])) {
-                    echo "<div class='error'>".$_SESSION['errorMsg']."</div>";
-                    session_unset();
-                }
+                    //Displaying login error
+                    if(isset($_SESSION['errorMsg'])) {
+                        echo "<div class='error'>".$_SESSION['errorMsg']."</div>";
+                        session_unset();
+                    }
                 ?>
                 <input type="submit" name="submitBtn" value="Login" id="loginBtn"/>
             </form>

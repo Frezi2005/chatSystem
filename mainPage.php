@@ -28,8 +28,8 @@
     </div>
     <div class="messages">
 
-        <div class="popupWindow">
-            <form class="newMessageForm" method="post">
+        <div class="popupWindow hidden">
+            <form action="newMessageSend.php" class="newMessageForm" method="post">
                 <input type="text" placeholder="Receiver name or id" name="receiverName">
                 <textarea name="messageText"></textarea>
                 <input type="submit" value="Send">
@@ -37,11 +37,18 @@
         </div>
 
     </div>
+    <div class="profile">
+    
+        <a href="logout.php" id="link">Logout</a>
+        <a href="profileDelete.php" id="link">Delete account</a>
+
+    </div>
 </body>
 
 </html>
 <?php
 
+    //Not working
     echo $_SESSION['user_name'];
 
     $result = $_GET['searchQuery'];
