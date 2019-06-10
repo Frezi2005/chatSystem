@@ -7,7 +7,6 @@
         //Getting all input fields value to variables
         $allChecked = true;
         $username = $_POST['username'];
-        $usersurname = $_POST['usersurname'];
         $password1 = $_POST['password1'];
         $password2 = $_POST['password2'];
         $email = $_POST['email'];
@@ -29,7 +28,7 @@
         //Checking if password1 matches password2
         if($password2 != $password1) {
             $allChecked = false;
-            $_SESSION['passError'] = "Password must be the same";
+            $_SESSION['passError'] = "Passwords must be the same";
         }
 
         //Checking if name contains not aplhanumeric characters and underscores
@@ -38,16 +37,16 @@
             $_SESSION['nameError'] = "Name can contain only alphanumeric characters";
         }
 
-        //Checking if surname contains not aplhanumeric characters and underscores
-        if(!preg_match('/[a-zA-Z0-9_]/' ,$usersurname)) {
-            $allChecked = false;
-            $_SESSION['surnameError'] = "Surname can contain only alphanumeric characters";
-        }
-
         //Checking if name is at least 1 character long
         if(strlen($username) < 1) {
             $allChecked = false;
             $_SESSION['nameError'] = "Name have to be at least 1 character long";
+        }
+
+        //Checking if name have more than 20 characters
+        if(strlen($username) > 20) {
+            $allChecked = false;
+            $_SESSION['nameError'] = "Name cannot have more than 20 characters";
         }
 
         //Validating email
@@ -56,6 +55,8 @@
             $_SESSION['emailError'] = "Please type correct email";
         }
 
+        
+
         //Checking if rules checkbox is checked
         if(empty($rules)) {
             $allChecked = false;
@@ -63,7 +64,7 @@
         }
 
         //Checking if email exists
-        $sql = "SELECT * FROM users WHERE email LIKE '.$email.'";
+        $sql = "SELECT * FROM users WHERE email = '$email'";
         $result = $conn->query($sql);
         $emailExists = $result->fetch();
         if($emailExists) {
@@ -71,10 +72,17 @@
             $_SESSION['emailError'] = "Email is already taken";
         }
 
-        //Checking if surname is at least 1 character long
-        if(strlen($usersurname) < 1) {
+        //Checking if name exists
+        $sql = "SELECT * FROM users WHERE user_name = '$username'";
+        $result = $conn->query($sql);
+        $nameExists = $result->fetch();
+        if($nameExists) {
             $allChecked = false;
-            $_SESSION['surnameError'] = "Surname have to be at least 1 character long";
+            $_SESSION['nameError'] = "Name is already taken";
+        }
+
+        if(empty($username) || empty($email) || empty($password1) || empty($password2)) {
+            $allChecked = false;
         }
 
         //Checking if $allChecked is true
@@ -82,7 +90,7 @@
             //Hashing password
             $passwordH = password_hash($password1, PASSWORD_DEFAULT);
             //Executing sql query
-            $sql = "INSERT INTO `users`(`id`, `user_name`, `user_surname`, `pass`, `email`, `friends`) VALUES (null, '.$username.', '.$usersurname.', $passwordH, $email, 0";
+            $sql = "INSERT INTO `users`(`id`, `user_name`,`profileImage`, `pass`, `email`, `friends`) VALUES (null, '$username','pictures/Y81jXSls6Ub9Y5MSlOVU.png', '$passwordH', '$email', 0)";
             $result = $conn->query($sql);
             //Checking if user is added
             if ($result) {
@@ -92,7 +100,8 @@
             }
             
         }
-        
+
+
     }  
 
 ?>
@@ -103,6 +112,8 @@
 <head>
     <link href="style.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Connect - registration page</title>
 </head>
 <body>
 
@@ -118,17 +129,8 @@
                     echo "<div class='error'>".$_SESSION['nameError']."</div>";
                     unset($_SESSION['nameError']);
                 }
-            ?>
-            <div>
-                <label for="usersurname">Surname</label>
-                <input type="text" name="usersurname" placeholder="Surname"/><br/>
-            </div>
-            <?php
-                //Displaying surname error
-                if(isset($_SESSION['surnameError'])) {
-                    echo "<div class='error'>".$_SESSION['surnameError']."</div>";
-                    unset($_SESSION['surnameError']);
-                }
+                
+        
             ?>
             <div>
                 <label for="email">Email</label>
@@ -140,6 +142,7 @@
                     echo "<div class='error'>".$_SESSION['emailError']."</div>";
                     unset($_SESSION['emailError']);
                 }
+                
             ?>
             <div>
                 <label for="password1">Password</label>
@@ -151,6 +154,7 @@
                     echo "<div class='error'>".$_SESSION['passError']."</div>";
                     unset($_SESSION['passError']);
                 }
+                
             ?>
             <div>
                 <label for="password2">Confirm password</label>

@@ -10,13 +10,14 @@
         $login = $_POST['loginField'];
         $password = $_POST['passwordField'];
         //Login user
-        $sql = "SELECT * FROM users WHERE user_name LIKE 'test' AND pass LIKE 'test'";
+        $sql = "SELECT * FROM users WHERE user_name = '$login'";
         $result = $conn->query($sql);
         $user = $result->fetch();
         //Checking is there is no error with login
-        if ($user) {
+        if ($result && password_verify($password, $user['pass'])) {
             $_SESSION['loggedIn'] = true;
             $_SESSION['user_name'] = $user['user_name'];
+            $_SESSION['user_id'] = $user['id'];
             header("Location: mainPage.php");
         } else {
             $_SESSION['loggedIn'] = false;
@@ -27,26 +28,5 @@
     }
 
 
-    exit();
-
-
-
-        // if($result) {
-        //     $row_count = $result->rowCount();
-        //     if($row_count>0) {
-        //         var_dump($result);
-        //         exit();
-        //         $row = $result->fetch_assoc();    
-        //         $_SESSION['loggedIn'] = true;
-        //         $_SESSION['user_name'] = $row['user_name'];
-        //         header("Location: mainPage.php");
-        //     } else {
-        //         $_SESSION['loggedIn'] = false;
-        //         $_SESSION['errorMsg'] = "Wrong login or password<br />";
-        //         header("Location: index.php");
-        //         exit();
-        //     }
-                
-        // }
             
 ?>
