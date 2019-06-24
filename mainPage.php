@@ -31,27 +31,26 @@
             $senderId = $_SESSION['user_id'];
             $sqlToInsertMessage = "INSERT INTO `messages`(`id`, `text`, `receiver_user_id`, `sender_user_id`) VALUES (null, '$messageText', '$userId', '$senderId')";
             $messageInstertingResult = $conn->query($sqlToInsertMessage);
+            unset($_POST['receiverName']);
+            unset($senderId);
+            unset($_POST['messageText']);
         }
 
     }
+
 
     //Setting profile image
     $sqlToGetProfileImage = "SELECT * FROM users WHERE id = '$userId'";
     $result = $conn->query($sqlToGetProfileImage);
     $image = $result->fetch();
     $image = $image['profileImage'];
-    if($image == "pictures/Y81jXSls6Ub9Y5MSlOVU.png") {
-        $_SESSION['image'] = $image;
-    } else {
-        $_SESSION['image'] = "pictures/".$image;
-    }
-
+    $_SESSION['image'] = $image;
 ?>
 
 <html>
 
 <head>
-    <link href="mainPageStyle.css" type="text/css" rel="stylesheet">
+    <link href="./css/mainPageStyle.css" type="text/css" rel="stylesheet">
     <script src="scripts.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <meta http-equiv="content-type" content="text/html" charset="utf-8">
@@ -59,74 +58,54 @@
 </head>
 
 <body>
-    <div class="container" style="width: 100%;">
-        <div class="channelContainer">
-            <form method="GET" action="#" class="searchForm">
-                <input type="search" name="searchQuery" placeholder="Search user" class="searchInput"/>
-                <input type="submit" class="searchBtn" value="Search"/>
-            </form>
-            <?php
+    <div id="blur">
+        <div class="container" style="width: 100%;">
+            <?php require("elements/leftMenu.php"); ?>
+            <div class="messages">
+                <?php
 
-               //Searching user
-                $query = $_GET['searchQuery'];
-                if(!empty($query)) {
-                    $sql = "SELECT * FROM `users` WHERE `users`.`user_name` LIKE '%$query%'";
-                    $result = $conn->query($sql);
-                    $count = $result->rowCount();
-                    if(!$result->rowCount() == 0){
-                        echo "<div class='resultsNumber'>Number of results: $count </div><br/>";
-                        echo "<br/>";
-                        while ($row = $result->fetch()) {
-                            echo "<div class='user'>" . $row['user_name'] . "<a href='addFriend.php' target='_blank'><i class='fas fa-user-plus'></i></a></div><br/>";
-                        }
-                    } else {
-                        echo "No results found";
+                    $image = $_SESSION['image'];
+                    //if ($messages['sender_user_id'] == )
+                    foreach($messages as $message) {
+                        echo "<div class='message'>";
+                        echo "<img src='$image' alt='Avatar' id='avatar-s' />";
+                        echo $message['text']."</div><br/>";
                     }
-                }
 
-            ?>
-
-            <div class="newMessage">
-                <i class="far fa-envelope letter"></i>
+                ?>
             </div>
-        </div>
-        <div class="messages">
-            <?php
-
-                $image = $_SESSION['image'];
-                foreach($messages as $message) {
-                    echo "<div class='message'>";
-                    echo "<img src='$image' alt='Avatar' id='avatar-s' />";
-                    echo $message['text']."</div>";
-                }
-
-            ?>
-            <div class="popupWindow hidden">
-                <form action="#" class="newMessageForm" method="post">
-                    <input id="receiverName" type="text" placeholder="Receiver name or id" name="receiverName">
-                    <textarea name="messageText"></textarea><br/>
-                    <input class="sendBtn" type="submit" name="submitBtn" value="Send">
-                </form>
-            </div>
-
-        </div>
-    </div> 
-    <div class="profile">
-        <div class="content">
-            <a id="link" href="avatarChange.php"><img src="<?php echo $_SESSION['image'] ?>" alt="Avatar" id="avatar" /></a>
-            <p><?php echo $_SESSION['name']  ?></p>
-            <a href="logout.php" id="link">Logout</a>
-            <a href="profileDelete.php" id="link">Delete account</a>
-        </div>     
+        </div> 
+        <?php require("elements/rightMenu.php"); ?>
     </div>
+    <div class="popupWindow hidden">
+        <form action="#" class="newMessageForm" method="post">
+            <input id="receiverName" type="text" placeholder="Receiver name or id" name="receiverName">
+            <textarea name="messageText"></textarea><br/>
+            <input class="sendBtn" type="submit" name="submitBtn" value="Send">
+        </form>
+    </div>
+
+    <?php
+        $sqlToCheckMessage = "SELECT * FROM `messages` WHERE receiver_user_id = '$userId'";
+        $result2 = $conn->query($sqlToCheckMessage);
+        $result2 = $result2->fetch();
+
+        if ($result2['Unread'] == 0) {
+
+            echo " 
+            <audio controls class='hidden' autoplay>
+                <source src='sounds/alert.mp3' type='audio/mpeg'>
+                Your browser does not support the audio element.
+            </audio> ";
+            $sqlToUpdateMessages = "UPDATE `messages` SET `Unread`= 1 WHERE receiver_user_id = '$userId'";
+            $conn->query($sqlToUpdateMessages);
+
+        }
+
+       
+    ?>
 </body>
 
 </html>
 
-<?php
-
-
-$conn->close();
-
-?>
 

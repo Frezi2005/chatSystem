@@ -13,11 +13,11 @@
         if(in_array($ext,$allowedExt) ) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile)) {
                 echo "File is valid, and was successfully uploaded.\n";
-                $sql = "UPDATE users SET profileImage = '$fileName' WHERE user_name = '$userName'";
+                $sql = "UPDATE users SET profileImage = '$uploadfile' WHERE user_name = '$userName'";
                 $conn->query($sql);
             }
         } else {
-            echo 'Allowed file extensions are: .png, .jpg, .jpeg, .jp2';
+            echo 'Allowed file extensions are: .png, .jpg, .jpeg, .jp2, .webp';
         }
         
     }
@@ -28,7 +28,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
     <title>Connect - avatar change</title>
 </head>
 <body>

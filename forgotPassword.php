@@ -2,64 +2,87 @@
 
     session_start();
     require("databaseConn.php");
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
+    // use PHPMailer\PHPMailer\PHPMailer;
+    // use PHPMailer\PHPMailer\Exception;
 
 
-    // Load Composer's autoloader
-    require 'vendor/autoload.php';
+    // // Load Composer's autoloader
+    // require 'vendor/autoload.php';
 
-    // Instantiation and passing `true` enables exceptions
-    $mail = new PHPMailer(true);
+    // // Instantiation and passing `true` enables exceptions
+    // $mail = new PHPMailer(true);
+
+
+    if (isset($_POST['submitBtn'])) {
+        //Assign all needed variables\
+        $allChecked = true;
+        $question = $_POST['question'];
+        $questionAnswer = $_POST['questionAnswer'];
+        $password1 = $_POST['password1'];
+        $password2 = $_POST['password2'];
+
+        //Checking password length
+        if(strlen($password1)<8||strlen($password1)>20) {
+            $allChecked = false;
+            $_SESSION['passError'] = "Password length must be beetwen 8 and 20 characters";
+        }
+
+        //Checking if password contains not aplhanumeric characters and underscores
+        if(!preg_match('/[a-zA-Z0-9_]/' ,$password1)) {
+            $allChecked = false;
+            $_SESSION['passError'] = "Password can contain only alphanumeric<br/> characters and underscores";
+        }
+
+        //Checking if password1 matches password2
+        if($password2 != $password1) {
+            $allChecked = false;
+            $_SESSION['passError'] = "Passwords must be the same";
+        }
+
+
+        if ($allChecked) {
+            $passwordH = password_hash($password1, PASSWORD_DEFAULT);
+            //Setup sql query
+            $sql = "UPDATE `users` SET `pass` = '$passwordH' WHERE question = '$question' AND questionAnswer = '$questionAnswer'";
+            $result = $conn->query($sql);
+            $password = $result->fetch();
+        }
+        
+    }
 
 ?>
 <html>
 
     <head>
-        <link href="style.css" type="text/css" rel="stylesheet">
+        <link href="./css/style.css" type="text/css" rel="stylesheet">
         <meta charset="UTF-8">
     </head>
     <body>
         <div class="wrapper">
-            <form method="post">
-                <input type="email" placeholder="Type here your email" name="email"><br/><br/>
-                <input type="submit" name="submitBtn" value="Send" id="forgotPassBtn">
+            <form method="post" action="#">
+                <select name="question">
+                    <option value="friend">Best friend name</option>
+                    <option value="food">Favourite food</option>
+                    <option value="pet">Your pet name</option>
+                    <option value="car">Car model</option>
+                </select> 
+                <input type="text" name="questionAnswer" placeholder="Auxiliary question"/><br/>
+                <input type="password" name="password1" placeholder="Type here new password"/><br/>
                 <?php
-                    if(isset($_SESSION['emailSended'])) {
-                        echo "<div>".$_SESSION['emailSended']."</div>";
-                        unset($_SESSION['emailSended']);
+
+                    //Displaying password error
+                    if(isset($_SESSION['passError'])) {
+                        echo "<div class='error'>".$_SESSION['passError']."</div>";
+                        unset($_SESSION['passError']);
                     }
+
                 ?>
+                <input type="password" name="password2" placeholder="Confirm password"/>
+                <input type="submit" value="Change password" name="submitBtn"/>
+                <a href="index.php" id="link">Go back to login</a>
             </form>
         </div>
     </body>
 
 </html>
 
-<?php
-    //Not working
-    if(isset($_POST['submitBtn'])) {
-        $email = $_POST['email'];
-        $sql = "SELECT * FROM users WHERE email LIKE 'kamil.wan05@gmail.com'";
-        $sql2 = "SELECT pass FROM users WHERE email = 'kamil.wan05@gmail.com'";
-        $emailResult = $conn->query($sql);
-        $passResult = $conn->query($sql2);
-        $pass = $passResult->fetch();
-        $emailChecked = $emailResult->fetch();
-        if ($emailChecked && $pass) {
-            $mail->setFrom('kamil.wan05@gmail.com', 'Connect');
-            $mail->addAddress('kamil.wan05@gmail.com');
-            $mail->Subject = 'Connect password recovery';
-            $mail->Body = "Here is your account password: ".$pass['pass'];
-            if (!$mail->Send()) {
-                echo 'Message was not sent.';
-                echo 'Mailer error: ' . $mail->ErrorInfo;
-            } else {
-                echo 'Message has been sent to: '.$emailChecked['email'];
-            }
-        } else {
-            echo "Error";
-        }
-    }
-
-?>

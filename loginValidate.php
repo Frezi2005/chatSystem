@@ -17,7 +17,7 @@
         if ($result && password_verify($password, $user['pass'])) {
             $_SESSION['loggedIn'] = true;
             $_SESSION['user_name'] = $user['user_name'];
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['id'];     
             header("Location: mainPage.php");
         } else {
             $_SESSION['loggedIn'] = false;

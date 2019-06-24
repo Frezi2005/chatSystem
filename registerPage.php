@@ -10,6 +10,8 @@
         $password1 = $_POST['password1'];
         $password2 = $_POST['password2'];
         $email = $_POST['email'];
+        $question = $_POST['question'];
+        $questionAnswer = $_POST['questionAnswer'];
         $rules = $_POST['rules'];
 
 
@@ -32,7 +34,7 @@
         }
 
         //Checking if name contains not aplhanumeric characters and underscores
-        if(!preg_match('/[a-zA-Z0-9_]/' ,$username)) {
+        if(!preg_match('/[a-zA-Z0-9_]/' ,$username) && preg_match('/[ęóąśłżźćń]/', $username)) {
             $allChecked = false;
             $_SESSION['nameError'] = "Name can contain only alphanumeric characters";
         }
@@ -90,7 +92,7 @@
             //Hashing password
             $passwordH = password_hash($password1, PASSWORD_DEFAULT);
             //Executing sql query
-            $sql = "INSERT INTO `users`(`id`, `user_name`,`profileImage`, `pass`, `email`, `friends`) VALUES (null, '$username','pictures/Y81jXSls6Ub9Y5MSlOVU.png', '$passwordH', '$email', 0)";
+            $sql = "INSERT INTO `users`(`id`, `user_name`,`profileImage`, `pass`, `email`,`question`, `questionAnswer`, `friends`) VALUES (null, '$username','pictures/Y81jXSls6Ub9Y5MSlOVU.png', '$passwordH', '$email','$question', '$questionAnswer', '0')";
             $result = $conn->query($sql);
             //Checking if user is added
             if ($result) {
@@ -110,7 +112,7 @@
 <html>
 
 <head>
-    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="./css/style.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>Connect - registration page</title>
@@ -160,6 +162,15 @@
                 <label for="password2">Confirm password</label>
                 <input type="password" name="password2" placeholder="Confirm password"/><br/>
             </div>
+            <div>
+            <select name="question">
+                <option value="friend">Best friend name</option>
+                <option value="food">Favourite food</option>
+                <option value="pet">Your pet name</option>
+                <option value="car">Car model</option>
+            </select> 
+            <input type="text" name="questionAnswer" placeholder="Auxiliary question"/><br/>
+            </div>
             <div class="rules">
                 <label for="rules"><a href="rules.html" id="rulesLink">Rules</a></label>
                 <input type="checkbox" name="rules"><br/>
@@ -179,3 +190,17 @@
 </body>
 
 </html>
+
+<?php
+
+if($_SESSION['loggedIn'] == true) {
+    $userId = $_SESSION['user_id'];
+    $sql = "SELECT * FROM users WHERE id = '$userId'";
+    $result = $conn->query($sql);
+    $user = $result->fetch();
+    $_SESSION['user_name'] = $user['user_name'];
+    $_SESSION['user_id'] = $user['id'];
+    header("Location: mainPage.php");
+}
+
+?>
